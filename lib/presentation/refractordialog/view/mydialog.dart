@@ -51,5 +51,5 @@ class mydialog extends StatelessWidget {
     );
   }
 
-  deletefunction() {}
+
 }
