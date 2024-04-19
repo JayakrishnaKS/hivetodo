@@ -16,65 +16,90 @@ class homescreen extends StatefulWidget {
 }
 
 class _homescreenState extends State<homescreen> {
+  Color selectedColor = colour.color4;
+
   @override
   void initState() {
-    if(_myBox.get("tododatabase")==null){
+    if (_myBox.get("tododatabase") == null) {
       db.initialdata();
-    }else{
+    } else {
       db.loaddata();
     }
     // TODO: implement initState
     super.initState();
   }
-  Tododatabase db=Tododatabase();
-  final _myBox=Hive.box("myBox");
-  final _controller =TextEditingController();
+
+  Tododatabase db = Tododatabase();
+  final _myBox = Hive.box("myBox");
+  final _controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    void onclick(index ) {
-
+    void onclick(index) {
       setState(() {
-        db.list[index][1]=!db.list[index][1];
-
-
-
+        db.list[index][1] = !db.list[index][1];
       });
-
+      db.updatedata();
     }
     return Scaffold(
         backgroundColor: colour.color1,
-      appBar: AppBar(
-        title: Text("Todo", style: TextStyle(color: Colors.white),),
-        backgroundColor: colour.color2,
-        elevation: 2,
-        centerTitle: true,),
-      floatingActionButton: FloatingActionButton(onPressed: (){
-        createtask();
-      },child: Icon(Icons.add),backgroundColor: colour.color4,),
-      body: ListView.builder(itemCount: db.list.length,itemBuilder: (context,index){
-        return todotile(onChanged: (p0){
-          onclick(index);
-        }, taskcompleted:db.list[index][1], taskname: db.list[index][0],
-          deletefunction: (context ) { deletetask(index);  },
-        );
-      })
+        appBar: AppBar(
+          title: Text("Todo", style: TextStyle(color: Colors.white),),
+          backgroundColor: colour.color2,
+          elevation: 2,
+          centerTitle: true,),
+        floatingActionButton: FloatingActionButton(onPressed: () {
+          createtask();
+        }, child: Icon(Icons.add), backgroundColor: colour.color4,),
+        body: ListView.builder(
+            itemCount: db.list.length, itemBuilder: (context, index) {
+          return todotile(onChanged: (p0) {
+            onclick(index);
+          },
+              taskcompleted: db.list[index][1],
+              taskname: db.list[index][0],
+              deletefunction: (context) {
+                deletetask(index);
+              },
+              selectedColor: selectedColor
+          );
+        })
     );
   }
 
   void createtask() {
-    showDialog(context: context, builder: (context){
-      return mydialog(onsave: () {
-        savethedata();
-        Navigator.pop(context);
-        _controller.clear();
-      }, controller: _controller,);
-    });
+    showDialog(context: context, builder: (context) {
+      return mydialog(
+        onsave: () {
+          savethedata();
+          Navigator.pop(context);
+          _controller.clear();
+        },
+        controller: _controller,
+        ongreen: () {
+          onclickgreen();
+        },
+        onred: () {
+          onclickred();
+        },
+        onyellow: () {
+          onclickyellow();
+        },
+
+        onColorSelected:
+            (color) {
+          setState(() {
+            selectedColor = color; // Update selected color
+          });db.updatedata();
+        },
+      );
+    },
+    );
   }
 
   void savethedata() {
     setState(() {
-     db.list.add([_controller.text,false]);
+      db.list.add([_controller.text, false,]);
     }
     );
     db.updatedata();
@@ -83,9 +108,21 @@ class _homescreenState extends State<homescreen> {
   void deletetask(index) {
     setState(() {
       db.list.removeAt(index);
-    });db.updatedata();
-
+    });
+    db.updatedata();
   }
+
+  void onclickgreen() {
+    setState(() {
+      //db.list.add(_controller.);
+    });
+    db.updatedata();
+  }
+
+  void onclickred() {}
+
+  void onclickyellow() {}
 
 
 }
+

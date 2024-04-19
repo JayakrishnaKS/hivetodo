@@ -1,12 +1,14 @@
+import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
 class Tododatabase{
+
   List  list=[];
 final _myBox=Hive.box("myBox");
 ///initialiazez the list to be pronted in the homescreen
 void initialdata(){
   list=[[
-    "Mwona",false
+    "Mwona",false,
   ],["makane",false]];
 }
 /// toloadthe data from the list
